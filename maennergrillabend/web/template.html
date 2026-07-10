@@ -66,18 +66,22 @@
   .tagline b{display:block;font-family:var(--disp);font-size:13px;letter-spacing:.03em;text-transform:uppercase}
   .tagline b em{color:var(--fire);font-style:normal}
 
-  /* Hero */
-  .hero{position:relative;padding:40px 16px 30px;overflow:hidden;background:#0d0a08}
-  /* Hero-Hintergrundbild: PLATZHALTER (iStock/AlexRaths, Comp) –
-     vor Veröffentlichung durch lizenzierte, wasserzeichenfreie Version ersetzen */
-  .hero::before{content:"";position:absolute;inset:-12px;z-index:0;
-    background-image:var(--bbq);background-size:cover;background-position:50% 46%;
-    filter:saturate(1.2) contrast(1.08) brightness(1.04);opacity:1}
-  .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  /* Gemeinsamer Steak-Hintergrund hinter Hero + Trupp (Glas scheint durch)
+     Bild: PLATZHALTER (iStock/AlexRaths, Comp) – vor Veröffentlichung durch
+     lizenzierte, wasserzeichenfreie Version ersetzen */
+  .glasswrap{position:relative;background:#0d0a08;overflow:hidden}
+  .glasswrap::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:var(--bbq);background-size:cover;background-position:50% 34%;
+    filter:saturate(1.16) contrast(1.05) brightness(1.03)}
+  .glasswrap::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
     background:
-      linear-gradient(180deg,rgba(13,10,8,.14) 0%,rgba(13,10,8,.26) 55%,rgba(13,10,8,.92) 100%),
-      linear-gradient(90deg,rgba(13,10,8,.58) 0%,rgba(13,10,8,.10) 60%,rgba(13,10,8,0) 100%);}
-  #embers{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:.55}
+      linear-gradient(180deg,rgba(13,10,8,.5) 0%,rgba(13,10,8,.24) 24%,rgba(13,10,8,.3) 60%,rgba(13,10,8,.99) 100%),
+      linear-gradient(90deg,rgba(13,10,8,.5) 0%,rgba(13,10,8,.05) 60%,rgba(13,10,8,0) 100%);}
+  .glasswrap>*{position:relative;z-index:2}
+
+  /* Hero */
+  .hero{position:relative;padding:40px 16px 30px;overflow:hidden}
+  #embers{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:.5}
   .hero-inner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
     display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center}
   .hero-emblem{display:flex;align-items:center;gap:9px;font-family:var(--disp);
@@ -107,12 +111,16 @@
     text-transform:uppercase;color:var(--text);margin:0}
   .slogan em{color:var(--fire);font-style:normal}
 
-  .cta-card{
-    background:linear-gradient(180deg,rgba(29,22,17,.66),rgba(18,13,9,.78));
-    backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
-    border:1px solid rgba(255,122,26,.28);border-radius:20px;padding:24px;
-    box-shadow:0 16px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+  /* Apple-Liquid-Glass: durchscheinendes Milchglas */
+  .glass{
+    background:linear-gradient(155deg,rgba(38,29,21,.30),rgba(14,10,7,.46));
+    backdrop-filter:blur(20px) saturate(1.5);
+    -webkit-backdrop-filter:blur(20px) saturate(1.5);
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:0 14px 44px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.22),
+      inset 0 -1px 0 rgba(0,0,0,.25);
   }
+  .cta-card{border-radius:20px;padding:24px}
   .feats b{text-shadow:0 1px 8px rgba(0,0,0,.8)}
   .cta-card h2{font-family:var(--disp);text-transform:uppercase;font-size:clamp(20px,3vw,26px);
     margin:0 0 8px}
@@ -351,6 +359,7 @@
   }
 </style>
 
+<div class="glasswrap">
 <section class="hero">
   <canvas id="embers"></canvas>
   <div class="hero-inner">
@@ -363,7 +372,7 @@
         <span><i>🍺</i><b>Kaltes Bier</b></span>
       </div>
     </div>
-    <div class="cta-card">
+    <div class="cta-card glass">
       <h2>Wann hast du Zeit?</h2>
       <p>Klicke im Kalender alle Tage an, an denen du Zeit hast.</p>
       <button class="btn-primary" id="toCal">Zeit eintragen</button>
@@ -372,13 +381,16 @@
 </section>
 
 <div class="wrap">
-  <section class="panel trupp">
+  <section class="panel trupp glass">
     <div class="trupp-head">
       <h2 class="section-title"><span class="spark">★</span> Unser Trupp</h2>
     </div>
     <div class="trupp-row" id="truppRow"></div>
   </section>
+</div>
+</div>
 
+<div class="wrap">
   <div class="main-grid">
     <section class="panel calendar" id="cal">
       <div class="cal-head">
