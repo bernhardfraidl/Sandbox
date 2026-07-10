@@ -15,6 +15,7 @@
     --none:#4a3d33;
     --disp:"Arial Black","Helvetica Neue",Helvetica,Arial,sans-serif;
     --body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --bbq:url("__BBQ_DATA__");
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -66,10 +67,29 @@
   .tagline b em{color:var(--fire);font-style:normal}
 
   /* Hero */
-  .hero{position:relative;padding:38px 16px 26px;overflow:hidden}
-  #embers{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.7}
-  .hero-inner{position:relative;z-index:1;max-width:1180px;margin:0 auto;
+  .hero{position:relative;padding:34px 16px 26px;overflow:hidden;background:#0d0a08}
+  .hero::before{content:"";position:absolute;inset:-12px;z-index:0;
+    background-image:var(--bbq);background-size:cover;background-position:72% 38%;
+    filter:blur(2px) saturate(1.08);opacity:.6}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(13,10,8,.5) 0%,rgba(13,10,8,.8) 68%,rgba(13,10,8,.98) 100%),
+      linear-gradient(90deg,rgba(13,10,8,.78),rgba(13,10,8,.12) 62%);}
+  #embers{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:.5}
+  .hero-inner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
     display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center}
+  .hero-emblem{display:flex;align-items:center;gap:9px;font-family:var(--disp);
+    text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--fire);margin-bottom:10px}
+  .hero-emblem i{font-style:normal;font-size:17px}
+  .hero-title{
+    font-family:var(--disp);font-weight:900;text-transform:uppercase;
+    font-size:clamp(44px,10.5vw,104px);line-height:.84;letter-spacing:-.015em;
+    margin:0;text-wrap:balance;text-shadow:0 4px 26px rgba(0,0,0,.65);
+  }
+  .hero-title span{color:var(--fire);display:block}
+  .hero-slog{font-family:var(--disp);text-transform:uppercase;letter-spacing:.01em;
+    font-size:clamp(19px,3.8vw,32px);margin:14px 0 3px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+  .hero-slog b{color:var(--fire)}
   .hero h1{
     font-family:var(--disp);font-weight:900;
     font-size:clamp(46px,10vw,104px);line-height:.9;letter-spacing:-.02em;
@@ -77,8 +97,8 @@
     text-shadow:0 4px 24px rgba(226,60,10,.35);
   }
   .hero h1 .b{color:var(--fire)}
-  .hero-sub{font-family:var(--disp);color:var(--fire);font-size:clamp(18px,3.6vw,30px);
-    letter-spacing:.02em;margin:10px 0 14px;text-transform:uppercase}
+  .hero-sub{font-family:var(--disp);color:var(--fire);font-size:clamp(16px,3.2vw,26px);
+    letter-spacing:.02em;margin:6px 0 14px;text-transform:uppercase}
   .hero-text{max-width:44ch;color:var(--muted);font-size:16px;margin:0 0 16px}
   .slogan{font-family:var(--disp);letter-spacing:.04em;font-size:15px;
     text-transform:uppercase;color:var(--text);margin:0}
@@ -268,8 +288,10 @@
   @media(max-width:600px){
     .wrap{padding:0 9px 38px}
     .hero{padding:16px 13px 10px}
-    .hero h1{font-size:clamp(36px,12.5vw,52px)}
-    .hero-sub{font-size:16px;margin:5px 0 7px}
+    .hero-emblem{font-size:10.5px;margin-bottom:7px}
+    .hero-title{font-size:clamp(40px,13vw,60px)}
+    .hero-slog{font-size:19px;margin:9px 0 2px}
+    .hero-sub{font-size:15px;margin:3px 0 7px}
     .hero-text{font-size:13.5px;margin-bottom:9px}
     .feats{gap:6px 14px}
     .feats span{font-size:11px}
@@ -336,7 +358,9 @@
   <canvas id="embers"></canvas>
   <div class="hero-inner">
     <div class="hero-copy">
-      <h1><span class="b">FLEISCH.</span><br>FEUER.<br>FREUNDE.</h1>
+      <div class="hero-emblem"><i>🔥</i><span>Operation glühende Kohle</span></div>
+      <h1 class="hero-title">MÄNNER<span>GRILLABEND</span></h1>
+      <p class="hero-slog"><b>Fleisch.</b> Feuer. Freunde.</p>
       <p class="hero-sub">Ein legendärer Abend.</p>
       <p class="hero-text">Damit möglichst viele dabei sein können, finden wir hier gemeinsam den perfekten Termin.</p>
       <div class="feats">
