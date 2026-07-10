@@ -190,6 +190,10 @@
   }
   .me-row label{min-width:0}
   .me-hint{color:var(--muted);font-size:12.5px}
+  .me-badge{display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:16px;
+    text-transform:uppercase;letter-spacing:.02em}
+  .me-badge b{color:var(--fire)}
+  .me-row.locked-id{align-items:center}
 
   .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;-webkit-overflow-scrolling:touch}
   table{border-collapse:collapse;width:100%;min-width:520px}
@@ -493,6 +497,14 @@ const MONTHS = ["Jan","Feb","März","Apr","Mai","Juni","Juli","Aug","Sep","Okt",
 const CYCLE = {undefined:"yes", u:"yes", yes:"maybe", maybe:"no", no:"u"};
 const GLYPH = {yes:"✓", maybe:"~", no:"✕", u:"○"};
 
+/* ---------- Identität aus persönlichem Link (?me=TOKEN) ---------- */
+const PLINKS = {"5rpq6g": "bernhard", "vjhpk8": "martin_w", "833vq4": "alex", "xx5ask": "ludwig", "9y6zag": "martin_f", "64h7qh": "dominik", "yxfyvc": "seraphin", "qn4b2k": "martin_h"};            // { token: personenKey }
+function nameOf(key){const p=PEOPLE.find(x=>x.key===key);return p?p.name:key;}
+function identityFromLink(){
+  const t=new URLSearchParams(location.search).get("me");
+  return (t && PLINKS[t]) ? PLINKS[t] : null;
+}
+
 /* ---------- state ---------- */
 const LS = "mga_draft_v1";
 let state = load();
@@ -501,6 +513,20 @@ function load(){
   return {me:null, host:false, fixed:null, avail:{}};
 }
 function save(){ try{localStorage.setItem(LS, JSON.stringify(state));}catch(e){} }
+
+/* ---------- Status schreiben (Backend-Austauschpunkt für Stufe B) ----------
+   Aktuell nur lokal (localStorage). Für Stufe B hier zusätzlich ans Backend
+   senden – siehe BACKEND-SETUP.md. loadRemote()/onRemoteChange() sind die
+   Gegenstücke fürs zentrale Laden bzw. Live-Updates ("alle sehen alle"). */
+function setStatus(dateKey, personKey, status){
+  state.avail[dateKey]=state.avail[dateKey]||{};
+  if(status==="u") delete state.avail[dateKey][personKey];
+  else state.avail[dateKey][personKey]=status;
+  save();
+  // STUFE B:  Backend.upsert(dateKey, personKey, status);
+}
+async function loadRemote(){ /* STUFE B: state.avail = await Backend.loadAll(); renderAll(); */ }
+function onRemoteChange(){  /* STUFE B: Live-Update -> state.avail mergen -> renderAll(); */ }
 
 /* ---------- date helpers ---------- */
 function mondayOf(d){const x=new Date(d);const g=(x.getDay()+6)%7;x.setDate(x.getDate()-g);x.setHours(0,0,0,0);return x;}
@@ -555,9 +581,18 @@ function renderTrupp(){
   row.appendChild(f);
 }
 
-/* ---------- me selector ---------- */
+/* ---------- me selector / Identitäts-Abzeichen ---------- */
 function renderMe(){
+  const meRow=document.querySelector(".me-row");
+  // Persönlicher Link erkannt -> kein Auswahlfeld, nur "Du bist ..."
+  if(state.identityLocked){
+    meRow.classList.add("locked-id");
+    meRow.innerHTML=`<span class="me-badge">👤 Du bist <b>${nameOf(state.me)}</b></span>
+      <span class="me-hint">Tippe in deiner Zeile die Tage an. Die anderen siehst du nur.</span>`;
+    return;
+  }
   const sel=document.getElementById("meSel");
+  if(!sel) return;
   sel.innerHTML=`<option value="">— auswählen —</option>`+
     PEOPLE.map(p=>`<option value="${p.key}">${p.name}</option>`).join("");
   sel.value=state.me||"";
@@ -602,10 +637,8 @@ function renderCal(){
       if(editable){
         b.onclick=()=>{
           const cur=(state.avail[k]&&state.avail[k][p.key])||"u";
-          const nx=CYCLE[cur];
-          state.avail[k]=state.avail[k]||{};
-          if(nx==="u") delete state.avail[k][p.key]; else state.avail[k][p.key]=nx;
-          save();renderCal();renderEval();
+          setStatus(k, p.key, CYCLE[cur]);
+          renderCal();renderEval();
         };
       }
       td.appendChild(b);tr.appendChild(td);
@@ -732,13 +765,19 @@ function embers(){
 document.getElementById("prevW").onclick=()=>{viewMon=addDays(viewMon,-7);renderAll();};
 document.getElementById("nextW").onclick=()=>{viewMon=addDays(viewMon,7);renderAll();};
 document.getElementById("todayW").onclick=()=>{viewMon=mondayOf(new Date());renderAll();};
-document.getElementById("meSel").onchange=e=>{state.me=e.target.value||null;save();renderMe();renderCal();};
+{const _ms=document.getElementById("meSel"); if(_ms) _ms.onchange=e=>{state.me=e.target.value||null;save();renderMe();renderCal();};}
 document.getElementById("toCal").onclick=()=>document.getElementById("cal").scrollIntoView({behavior:"smooth"});
 document.getElementById("hostChk").onchange=e=>{state.host=e.target.checked;save();renderPhase();};
 document.getElementById("lockBtn").onclick=()=>{state.fixed=document.getElementById("fixSel").value;save();renderAll();};
 document.getElementById("reopenBtn").onclick=()=>{state.fixed=null;save();renderAll();};
 
 function renderAll(){renderCal();renderEval();renderPhase();tickCountdown();}
+
+/* Persönlicher Link? -> Identität festlegen, "Ich bin"-Auswahl entfällt */
+const linkId = identityFromLink();
+if(linkId){ state.me = linkId; state.identityLocked = true; save(); }
+
 seed();renderTrupp();renderMe();renderAll();embers();
+/* STUFE B: loadRemote(); + Live-Abo starten (onRemoteChange) */
 setInterval(tickCountdown,1000);
 </script>
