@@ -67,15 +67,15 @@
   .tagline b em{color:var(--fire);font-style:normal}
 
   /* Hero */
-  .hero{position:relative;padding:34px 16px 26px;overflow:hidden;background:#0d0a08}
+  .hero{position:relative;padding:40px 16px 30px;overflow:hidden;background:#0d0a08}
   .hero::before{content:"";position:absolute;inset:-12px;z-index:0;
-    background-image:var(--bbq);background-size:cover;background-position:72% 38%;
-    filter:blur(2px) saturate(1.08);opacity:.6}
+    background-image:var(--bbq);background-size:cover;background-position:58% 42%;
+    filter:blur(1px) saturate(1.18) brightness(1.06);opacity:.98}
   .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
     background:
-      linear-gradient(180deg,rgba(13,10,8,.5) 0%,rgba(13,10,8,.8) 68%,rgba(13,10,8,.98) 100%),
-      linear-gradient(90deg,rgba(13,10,8,.78),rgba(13,10,8,.12) 62%);}
-  #embers{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:.5}
+      linear-gradient(180deg,rgba(13,10,8,.28) 0%,rgba(13,10,8,.42) 52%,rgba(13,10,8,.95) 100%),
+      linear-gradient(90deg,rgba(13,10,8,.66) 0%,rgba(13,10,8,.22) 58%,rgba(13,10,8,0) 100%);}
+  #embers{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:.55}
   .hero-inner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
     display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center}
   .hero-emblem{display:flex;align-items:center;gap:9px;font-family:var(--disp);
@@ -98,17 +98,20 @@
   }
   .hero h1 .b{color:var(--fire)}
   .hero-sub{font-family:var(--disp);color:var(--fire);font-size:clamp(16px,3.2vw,26px);
-    letter-spacing:.02em;margin:6px 0 14px;text-transform:uppercase}
-  .hero-text{max-width:44ch;color:var(--muted);font-size:16px;margin:0 0 16px}
+    letter-spacing:.02em;margin:8px 0 14px;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.75)}
+  .hero-text{max-width:44ch;color:#f0e6da;font-size:16px;margin:0 0 16px;
+    text-shadow:0 1px 10px rgba(0,0,0,.85)}
   .slogan{font-family:var(--disp);letter-spacing:.04em;font-size:15px;
     text-transform:uppercase;color:var(--text);margin:0}
   .slogan em{color:var(--fire);font-style:normal}
 
   .cta-card{
-    background:linear-gradient(180deg,#1d1611,#140f0b);
-    border:1px solid var(--line);border-radius:20px;padding:24px;
-    box-shadow:0 16px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
+    background:linear-gradient(180deg,rgba(29,22,17,.66),rgba(18,13,9,.78));
+    backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+    border:1px solid rgba(255,122,26,.28);border-radius:20px;padding:24px;
+    box-shadow:0 16px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
   }
+  .feats b{text-shadow:0 1px 8px rgba(0,0,0,.8)}
   .cta-card h2{font-family:var(--disp);text-transform:uppercase;font-size:clamp(20px,3vw,26px);
     margin:0 0 8px}
   .cta-card p{color:var(--muted);margin:0 0 18px}
@@ -346,21 +349,11 @@
   }
 </style>
 
-<header class="topbar">
-  <div class="brand"><span>MÄNNER</span><strong>GRILLABEND</strong></div>
-  <div class="tagline">
-    <span class="mug">🍺</span>
-    <b>Gutes Fleisch.<br><em>Kaltes Bier.</em></b>
-  </div>
-</header>
-
 <section class="hero">
   <canvas id="embers"></canvas>
   <div class="hero-inner">
     <div class="hero-copy">
-      <div class="hero-emblem"><i>🔥</i><span>Operation glühende Kohle</span></div>
       <h1 class="hero-title">MÄNNER<span>GRILLABEND</span></h1>
-      <p class="hero-slog"><b>Fleisch.</b> Feuer. Freunde.</p>
       <p class="hero-sub">Ein legendärer Abend.</p>
       <p class="hero-text">Damit möglichst viele dabei sein können, finden wir hier gemeinsam den perfekten Termin.</p>
       <div class="feats">
@@ -417,7 +410,6 @@
         <span><i class="lg no">✕</i> Passt nicht</span>
         <span><i class="lg none">○</i> Noch nicht gewählt</span>
       </div>
-      <p class="foot-note">Originalfotos unverändert · nur Größenanpassung und Kreisausschnitt · 1 Platz noch frei</p>
     </section>
 
     <aside class="sidebar">
