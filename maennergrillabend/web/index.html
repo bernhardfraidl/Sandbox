@@ -122,14 +122,17 @@
 
   /* Apple-Liquid-Glass: durchscheinendes Milchglas */
   .glass{
-    background:linear-gradient(155deg,rgba(38,29,21,.30),rgba(14,10,7,.46));
-    backdrop-filter:blur(20px) saturate(1.5);
-    -webkit-backdrop-filter:blur(20px) saturate(1.5);
+    background:linear-gradient(155deg,rgba(42,32,24,.08),rgba(12,9,6,.16));
+    backdrop-filter:blur(10px) saturate(1.35);
+    -webkit-backdrop-filter:blur(10px) saturate(1.35);
     border:1px solid rgba(255,255,255,.16);
-    box-shadow:0 14px 44px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.22),
-      inset 0 -1px 0 rgba(0,0,0,.25);
+    box-shadow:0 14px 44px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.24),
+      inset 0 -1px 0 rgba(0,0,0,.2);
   }
   .cta-card{border-radius:20px;padding:24px}
+  /* Lesbarkeit auf dem transparenten Glas */
+  .glass .section-title,.cta-card h2{text-shadow:0 2px 12px rgba(0,0,0,.8)}
+  .cta-card p,.glass .nm,.member.free .nm{text-shadow:0 1px 9px rgba(0,0,0,.9)}
   .feats b{text-shadow:0 1px 8px rgba(0,0,0,.8)}
   .cta-card h2{font-family:var(--disp);text-transform:uppercase;font-size:clamp(20px,3vw,26px);
     margin:0 0 8px}
