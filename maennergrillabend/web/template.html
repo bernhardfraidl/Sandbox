@@ -102,22 +102,30 @@
   .btn-primary:hover{filter:brightness(1.06)}
   .btn-primary:active{transform:translateY(1px)}
 
+  /* Feature-Zeile: Fleisch / Bier / Feuer */
+  .feats{display:flex;flex-wrap:wrap;gap:10px 20px;margin:2px 0 0}
+  .feats span{display:flex;align-items:center;gap:8px;font-family:var(--disp);
+    text-transform:uppercase;font-size:13px;letter-spacing:.02em}
+  .feats i{font-style:normal;font-size:22px;filter:drop-shadow(0 2px 5px rgba(255,122,26,.45))}
+  .feats b{color:var(--muted);font-weight:800}
+
   /* Trupp */
   .trupp{margin-top:8px}
-  .trupp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px}
-  .trupp-row{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 12px;scrollbar-width:thin}
-  .member{flex:0 0 auto;width:104px;text-align:center}
+  .trupp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px}
+  .trupp-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:12px;padding:2px 0}
+  .member{text-align:center}
   .ring{
-    width:96px;height:96px;border-radius:50%;margin:0 auto 9px;
+    width:76px;height:76px;border-radius:50%;margin:0 auto 7px;
     padding:3px;background:linear-gradient(140deg,var(--fire),var(--ember));
     box-shadow:0 6px 16px rgba(0,0,0,.5);
   }
   .ring>div{width:100%;height:100%;border-radius:50%;overflow:hidden;background:#000}
   .ring img{width:100%;height:100%;object-fit:cover;display:block}
-  .member .nm{font-family:var(--disp);font-size:15px;letter-spacing:.01em}
+  .member .nm{font-family:var(--disp);font-size:13px;letter-spacing:.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .member.free .ring{background:#2a221b}
   .member.free .ph{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;
-    justify-content:center;font-size:38px;color:var(--muted);
+    justify-content:center;font-size:30px;color:var(--muted);
     border:2px dashed #4a3d33;background:#161009}
   .member.free .nm{color:var(--muted)}
 
@@ -258,32 +266,57 @@
     .sidebar{order:2}
   }
   @media(max-width:600px){
-    .wrap{padding:0 10px 44px}
-    .hero{padding:24px 14px 18px}
-    .hero h1{font-size:clamp(44px,15vw,64px)}
-    .hero-sub{font-size:20px}
-    .hero-text{font-size:15px}
-    .topbar{padding:10px 12px}
-    .brand span{font-size:12px;letter-spacing:.14em}
-    .brand strong{font-size:16px}
-    .tagline b{font-size:10px}
-    .tagline .mug{font-size:20px}
-    .panel{padding:15px;border-radius:14px}
-    .cta-card{padding:18px}
-    .section-title{font-size:22px}
-    .trupp-row{gap:12px}
-    .member{width:88px}
-    .ring{width:80px;height:80px}
-    .cal-head{gap:8px}
-    .cal-nav{width:100%;justify-content:space-between}
-    .cal-nav button{flex:1;min-height:42px;font-size:12px;padding:8px 6px}
-    .wk{order:-1;flex-basis:100%;min-width:0;margin-bottom:2px}
-    .me-row{padding:11px}
+    .wrap{padding:0 9px 38px}
+    .hero{padding:16px 13px 10px}
+    .hero h1{font-size:clamp(36px,12.5vw,52px)}
+    .hero-sub{font-size:16px;margin:5px 0 7px}
+    .hero-text{font-size:13.5px;margin-bottom:9px}
+    .feats{gap:6px 14px}
+    .feats span{font-size:11px}
+    .feats i{font-size:18px}
+    .topbar{padding:9px 12px}
+    .brand span{font-size:11px;letter-spacing:.13em}
+    .brand strong{font-size:15px}
+    .tagline b{font-size:9.5px}
+    .tagline .mug{font-size:18px}
+    .panel{padding:13px;border-radius:13px}
+    .cta-card{padding:15px}
+    .cta-card h2{font-size:18px}
+    .cta-card p{font-size:13px;margin-bottom:12px}
+    .btn-primary{font-size:15px;padding:13px}
+    .section-title{font-size:19px}
+    .main-grid{gap:13px;margin-top:13px}
+    .sidebar{gap:13px}
+
+    /* Trupp: 3x3-Raster, alle 9 sichtbar */
+    .trupp-row{grid-template-columns:repeat(3,1fr);gap:10px}
+    .ring{width:72px;height:72px}
+    .member .nm{font-size:12px}
+
+    /* Kalender: ganze Woche ohne Seitwärts-Scroll */
+    .cal-head{gap:6px}
+    .cal-nav{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .cal-nav button{min-height:38px;font-size:12px;padding:7px 4px}
+    .wk{grid-column:1/-1;order:-1;min-width:0;margin-bottom:1px}
+    .me-row{padding:10px;gap:8px}
     .me-row label{width:100%;justify-content:space-between}
     .me-row select{flex:1}
-    .st{width:38px;height:38px}
-    .best-date{font-size:26px}
-    .footer{font-size:11px}
+    .me-hint{font-size:11.5px}
+    .table-wrap{overflow-x:visible}
+    table{min-width:0;table-layout:fixed}
+    thead th{min-width:0;font-size:10.5px;padding:6px 0}
+    thead th .d{font-size:9px}
+    thead th.namecol{padding-left:7px;width:34%}
+    .pcell{min-width:0;padding:6px 3px;gap:5px}
+    .pcell img{width:22px;height:22px}
+    .pcell .pn{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    tbody td{padding:4px 0}
+    .st{width:30px;height:30px;font-size:13px}
+    .legend{gap:8px 12px;font-size:11.5px}
+    .foot-note{font-size:11px}
+    .best-date{font-size:24px}
+    .cd-cell b{font-size:22px}
+    .footer{font-size:10.5px}
   }
   @media(prefers-reduced-motion:reduce){
     #embers{display:none}
@@ -306,7 +339,11 @@
       <h1><span class="b">FLEISCH.</span><br>FEUER.<br>FREUNDE.</h1>
       <p class="hero-sub">Ein legendärer Abend.</p>
       <p class="hero-text">Damit möglichst viele dabei sein können, finden wir hier gemeinsam den perfekten Termin.</p>
-      <p class="slogan">Gutes Fleisch. <em>Kaltes Bier.</em></p>
+      <div class="feats">
+        <span><i>🥩</i><b>Geiles Fleisch</b></span>
+        <span><i>🍺</i><b>Kaltes Bier</b></span>
+        <span><i>🔥</i><b>Gute Gespräche</b></span>
+      </div>
     </div>
     <div class="cta-card">
       <h2>Wann hast du Zeit?</h2>
