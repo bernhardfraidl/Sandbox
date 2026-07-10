@@ -1,0 +1,58 @@
+[
+  {
+    "file": "PROMPT_CLAUDE_CODE.md",
+    "sha256": "1762fb291a47e3f360e784db31c14637ec68f4c9a1d7e2db1b76867af42b357d"
+  },
+  {
+    "file": "README.md",
+    "sha256": "1f9ba88d1b35d32ac23f65f1d8828238c78ecb9f6951f65b5c928352913e33e4"
+  },
+  {
+    "file": "assets/people/alex.png",
+    "sha256": "a350c12bf7073ad73196c1afa6155c1d69e377e5988352703c3b4d9274de3a16"
+  },
+  {
+    "file": "assets/people/bernhard.png",
+    "sha256": "d6d51d6c69dd6167ea8c8a250075633386a6676cc4867094754782ac7dcb13be"
+  },
+  {
+    "file": "assets/people/dominik.png",
+    "sha256": "1235c1ef8d79c40bc132b2b08a31de5bbe90bf990504846a02b0bc50dd322144"
+  },
+  {
+    "file": "assets/people/ludwig.png",
+    "sha256": "867c0ffc385a0b4b491f2ee59a63b6fa7d175aed4ba81bc10a440c3c1ae02edf"
+  },
+  {
+    "file": "assets/people/martin_f.png",
+    "sha256": "45b7def6a4e85b7a6f695bf29e78cdaeb1e85b73d0d729fbea7a3bd09cf527d7"
+  },
+  {
+    "file": "assets/people/martin_h.png",
+    "sha256": "8d9fcb9516e0e606fdffb6ab31bb36e18f83915c19c7f479da1e8b2bc4bed9fb"
+  },
+  {
+    "file": "assets/people/martin_w.png",
+    "sha256": "ecf12804bfe909ae9904e5c12283ab64eeefc911803ae093b1f2e80c0459bfc4"
+  },
+  {
+    "file": "assets/people/seraphin.png",
+    "sha256": "8d7b8917dd4f34d863bc102f84fc949c4a2e5f700c01c0829917ce07f5635361"
+  },
+  {
+    "file": "assets/reference/bbq_style_reference.png",
+    "sha256": "22b41c58f01ebeb1875b1f275fbdf4972fc18c1b25b41e8ac7d17651683b0456"
+  },
+  {
+    "file": "assets/reference/onepage_mockup.png",
+    "sha256": "d45ffa180e0abc04882a3c80d90d3a839b7d397ff36a5ba2b3342f1882b99c21"
+  },
+  {
+    "file": "assets/reference/photo_approval_reference.png",
+    "sha256": "06ad3088e94ec07789d8f1191959f46ede1d2dfb5dd63f4b08518fc94c450c5e"
+  },
+  {
+    "file": "config/people.json",
+    "sha256": "e1607b3f772d4d380c4593e6e6da34c24c64f355fdc663cc0b3f5b4ba86bebc9"
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "rules": {
+    "use_original_files_only": true,
+    "no_ai_person_generation": true,
+    "no_face_retouching": true,
+    "no_person_merging": true,
+    "allowed_operations": [
+      "CSS size adjustment",
+      "circular clipping via border-radius",
+      "object-position/object-fit for visible crop only"
+    ]
+  },
+  "people": [
+    {
+      "name": "Bernhard",
+      "file": "assets/people/bernhard.png",
+      "objectPosition": "50% 48%",
+      "scaleHint": 1.02
+    },
+    {
+      "name": "Martin.W.",
+      "file": "assets/people/martin_w.png",
+      "objectPosition": "50% 50%",
+      "scaleHint": 1.03
+    },
+    {
+      "name": "Alex",
+      "file": "assets/people/alex.png",
+      "objectPosition": "50% 47%",
+      "scaleHint": 1.0
+    },
+    {
+      "name": "Ludwig",
+      "file": "assets/people/ludwig.png",
+      "objectPosition": "52% 50%",
+      "scaleHint": 1.06,
+      "note": "Keinen zusätzlichen weißen inneren Halbkreis oder zweiten Rand anzeigen."
+    },
+    {
+      "name": "Martin.F.",
+      "file": "assets/people/martin_f.png",
+      "objectPosition": "52% 44%",
+      "scaleHint": 1.02,
+      "note": "Gesicht mittig und etwas kleiner zeigen. Flaschen nur durch den kreisförmigen Bildausschnitt ausblenden; Person nicht retuschieren."
+    },
+    {
+      "name": "Dominik",
+      "file": "assets/people/dominik.png",
+      "objectPosition": "54% 42%",
+      "scaleHint": 1.06
+    },
+    {
+      "name": "Seraphin",
+      "file": "assets/people/seraphin.png",
+      "objectPosition": "50% 44%",
+      "scaleHint": 1.03
+    },
+    {
+      "name": "Martin H.",
+      "file": "assets/people/martin_h.png",
+      "objectPosition": "50% 46%",
+      "scaleHint": 1.02
+    },
+    {
+      "name": "Freier Platz",
+      "file": null,
+      "placeholder": true
+    }
+  ]
+}
