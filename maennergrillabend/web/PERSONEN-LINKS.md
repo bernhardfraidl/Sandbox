@@ -32,6 +32,7 @@ https://bsf.github.io/grillabend/?me=5rpq6g   ->  öffnet als „Bernhard"
 | Dominik    | `64h7qh` | `<DEINE-URL>?me=64h7qh`             |
 | Seraphin   | `yxfyvc` | `<DEINE-URL>?me=yxfyvc`             |
 | Martin H.  | `qn4b2k` | `<DEINE-URL>?me=qn4b2k`             |
+| Gerhard    | `jas8mv` | `<DEINE-URL>?me=jas8mv`             |
 
 ## Wichtig
 

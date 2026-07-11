@@ -491,6 +491,7 @@ const PEOPLE = [
   {key:"dominik",  name:"Dominik",   pos:"54% 42%", sc:1.06},
   {key:"seraphin", name:"Seraphin",  pos:"50% 44%", sc:1.03},
   {key:"martin_h", name:"Martin H.", pos:"50% 46%", sc:1.02},
+  {key:"gerhard",  name:"Gerhard",   pos:"50% 52%", sc:1.02},
 ];
 const DAYS = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 const MONTHS = ["Jan","Feb","März","Apr","Mai","Juni","Juli","Aug","Sep","Okt","Nov","Dez"];
@@ -549,6 +550,7 @@ function seed(){
     ["n","m","y","m","y","n","m"],
     ["y","y","m","y","y","m","y"],
     ["m","y","y","n","m","y","n"],
+    ["y","m","y","y","y","y","m"],
   ];
   const map={y:"yes",m:"maybe",n:"no"};
   [0,1].forEach(wk=>{
@@ -576,9 +578,6 @@ function renderTrupp(){
       <div class="nm">${p.name}</div>`;
     row.appendChild(el);
   });
-  const f=document.createElement("div");f.className="member free";
-  f.innerHTML=`<div class="ring"><div class="ph">＋</div></div><div class="nm">Freier Platz</div>`;
-  row.appendChild(f);
 }
 
 /* ---------- me selector / Identitäts-Abzeichen ---------- */
@@ -645,11 +644,6 @@ function renderCal(){
     }
     body.appendChild(tr);
   });
-  // freier platz row
-  const tr=document.createElement("tr");
-  tr.innerHTML=`<td class="stickycol"><div class="pcell free"><span class="mini">＋</span><span class="pn" style="color:var(--muted)">Freier Platz</span></div></td>`+
-    DAYS.map((d,i)=>`<td class="${i>=5?'wknd':''}"><span class="st" aria-hidden="true">○</span></td>`).join("");
-  body.appendChild(tr);
 }
 
 /* ---------- evaluation ---------- */
