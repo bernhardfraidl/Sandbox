@@ -19,12 +19,16 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:#0d0a08}
+  /* Durchgehender Steak-Hintergrund hinter der ganzen Seite (Glas scheint durch)
+     Bild: iStock 947472360 (vom Nutzer bereitgestellt) – Lizenz sicherstellen */
+  #bg{position:fixed;inset:0;z-index:-1;background-image:var(--bbq);
+    background-size:cover;background-position:50% 26%;
+    filter:saturate(1.05) contrast(1.03)}
+  #bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(13,10,8,.6),rgba(13,10,8,.48) 30%,rgba(13,10,8,.5));}
   body{
-    background:
-      radial-gradient(120% 90% at 78% -8%, rgba(255,122,26,.22), transparent 45%),
-      radial-gradient(90% 70% at 10% 0%, rgba(226,60,10,.14), transparent 40%),
-      var(--bg);
+    background:transparent;
     color:var(--text);
     font-family:var(--body);
     line-height:1.5;
@@ -32,12 +36,16 @@
     overflow-x:hidden;
   }
   .wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+  /* Alle Fenster = Apple-Liquid-Glass (Steak scheint durch) */
   .panel{
-    background:linear-gradient(180deg,var(--panel),var(--bg2));
-    border:1px solid var(--line);
+    background:linear-gradient(155deg,rgba(44,34,26,.02),rgba(10,8,5,.06));
+    backdrop-filter:blur(7px) saturate(1.3);
+    -webkit-backdrop-filter:blur(7px) saturate(1.3);
+    border:1px solid rgba(255,255,255,.14);
     border-radius:18px;
     padding:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    box-shadow:0 12px 34px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.18),
+      inset 0 -1px 0 rgba(0,0,0,.2);
   }
   .section-title{
     font-family:var(--disp);
@@ -66,20 +74,12 @@
   .tagline b{display:block;font-family:var(--disp);font-size:13px;letter-spacing:.03em;text-transform:uppercase}
   .tagline b em{color:var(--fire);font-style:normal}
 
-  /* Gemeinsamer Steak-Hintergrund hinter Hero + Trupp (Glas scheint durch)
-     Bild: iStock 947472360 (vom Nutzer bereitgestellt) – Lizenz sicherstellen */
-  .glasswrap{position:relative;background:#0d0a08;overflow:hidden}
-  .glasswrap::before{content:"";position:absolute;inset:0;z-index:0;
-    background-image:var(--bbq);background-size:cover;background-position:50% 18%;
-    filter:saturate(1.06) contrast(1.03) brightness(1.02)}
-  .glasswrap::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:
-      linear-gradient(180deg,rgba(13,10,8,.5) 0%,rgba(13,10,8,.24) 24%,rgba(13,10,8,.3) 60%,rgba(13,10,8,.99) 100%),
-      linear-gradient(90deg,rgba(13,10,8,.5) 0%,rgba(13,10,8,.05) 60%,rgba(13,10,8,0) 100%);}
-  .glasswrap>*{position:relative;z-index:2}
+  .glasswrap{position:relative}
 
   /* Hero */
   .hero{position:relative;padding:40px 16px 30px;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(13,10,8,.5) 0%,rgba(13,10,8,.12) 45%,rgba(13,10,8,0) 75%)}
   #embers{position:absolute;inset:0;width:100%;height:100%;z-index:2;opacity:.5}
   .hero-inner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
     display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center}
@@ -112,11 +112,11 @@
 
   /* Apple-Liquid-Glass: durchscheinendes Milchglas */
   .glass{
-    background:linear-gradient(155deg,rgba(44,34,26,.03),rgba(10,8,5,.09));
+    background:linear-gradient(155deg,rgba(44,34,26,.02),rgba(10,8,5,.06));
     backdrop-filter:blur(7px) saturate(1.3);
     -webkit-backdrop-filter:blur(7px) saturate(1.3);
-    border:1px solid rgba(255,255,255,.16);
-    box-shadow:0 14px 44px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.24),
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 12px 34px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.2),
       inset 0 -1px 0 rgba(0,0,0,.2);
   }
   .cta-card{border-radius:20px;padding:24px}
@@ -365,6 +365,7 @@
   }
 </style>
 
+<div id="bg"></div>
 <div class="glasswrap">
 <section class="hero">
   <canvas id="embers"></canvas>
