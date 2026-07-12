@@ -227,7 +227,7 @@
   .st.yes{background:rgba(92,194,76,.22);border-color:var(--yes);color:var(--yes)}
   .st.maybe{background:rgba(245,166,35,.22);border-color:var(--maybe);color:var(--maybe)}
   .st.no{background:rgba(229,67,43,.22);border-color:var(--no);color:var(--no)}
-  .st:focus-visible{outline:2px solid var(--fire);outline-offset:2px}
+  .st:focus, .st:focus-visible{outline:none}
   .st.oor{opacity:.2;border-style:dashed;color:var(--none)}
   th.oor,td.oor{opacity:.4}
 
@@ -638,6 +638,7 @@ function renderCal(){
         ({yes:"Passt",maybe:"Eher fraglich",no:"Passt nicht"}[v]));
       if(editable){
         b.onclick=()=>{
+          b.blur();                                   // Fokus sofort lösen -> kein hängender oranger Rahmen
           const cur=(state.avail[k]&&state.avail[k][p.key])||"no";
           setStatus(k, p.key, CYCLE[cur]);
           renderCal();renderEval();
