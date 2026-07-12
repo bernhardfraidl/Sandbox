@@ -175,6 +175,8 @@
     font-family:var(--body);font-weight:700;font-size:13px;padding:8px 12px;border-radius:9px;cursor:pointer;
   }
   .cal-nav button:hover{border-color:var(--fire)}
+  .cal-nav button:disabled{opacity:.32;cursor:default}
+  .cal-nav button:disabled:hover{border-color:var(--line)}
   .wk{display:flex;flex-direction:column;align-items:center;line-height:1.1;min-width:150px}
   .wk strong{font-family:var(--disp);color:var(--fire);font-size:16px}
   .wk span{color:var(--muted);font-size:12px}
@@ -225,6 +227,8 @@
   .st.maybe{background:rgba(245,166,35,.16);border-color:var(--maybe);color:var(--maybe)}
   .st.no{background:rgba(229,67,43,.16);border-color:var(--no);color:var(--no)}
   .st:focus-visible{outline:2px solid var(--fire);outline-offset:2px}
+  .st.oor{opacity:.2;border-style:dashed;color:var(--none)}
+  th.oor,td.oor{opacity:.4}
 
   .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12.5px;color:var(--muted)}
   .legend span{display:flex;align-items:center;gap:7px}
@@ -410,12 +414,7 @@
         </div>
       </div>
 
-      <div class="me-row">
-        <label>Ich bin:
-          <select id="meSel"></select>
-        </label>
-        <span class="me-hint" id="meHint"></span>
-      </div>
+      <div class="me-row" id="meRow"></div>
 
       <div class="table-wrap">
         <table id="calTable">
@@ -536,7 +535,18 @@ function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=(x.getUTCDay()+6)%7;x.setUTCDate(x.getUTCDate()-day+3);const first=new Date(Date.UTC(x.getUTCFullYear(),0,4));return 1+Math.round(((x-first)/86400000-3+((first.getUTCDay()+6)%7))/7);}
 function fmtShort(d){return DAYS[(d.getDay()+6)%7]+" "+d.getDate()+"."+(d.getMonth()+1)+".";}
 
-let viewMon = mondayOf(new Date());
+/* ---------- Zeitraum: heute bis 13. September ---------- */
+const TODAY=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
+let RANGE_END=new Date(TODAY.getFullYear(),8,13);            // 13. Sept (Monat 8 = Sept)
+if(RANGE_END<TODAY) RANGE_END=new Date(TODAY.getFullYear()+1,8,13);
+RANGE_END.setHours(0,0,0,0);
+const RANGE_START_MON=mondayOf(TODAY);
+const RANGE_END_MON=mondayOf(RANGE_END);
+function inRange(d){return d>=TODAY && d<=RANGE_END;}
+function clampMon(m){ if(m<RANGE_START_MON) return new Date(RANGE_START_MON);
+  if(m>RANGE_END_MON) return new Date(RANGE_END_MON); return m; }
+
+let viewMon = new Date(RANGE_START_MON);
 
 /* ---------- seed demo data (first visit only) ---------- */
 function seed(){
@@ -583,21 +593,15 @@ function renderTrupp(){
 /* ---------- me selector / Identitäts-Abzeichen ---------- */
 function renderMe(){
   const meRow=document.querySelector(".me-row");
-  // Persönlicher Link erkannt -> kein Auswahlfeld, nur "Du bist ..."
   if(state.identityLocked){
+    // Identität kommt aus dem persönlichen Link -> nur "Du bist ..."
     meRow.classList.add("locked-id");
     meRow.innerHTML=`<span class="me-badge">👤 Du bist <b>${nameOf(state.me)}</b></span>
       <span class="me-hint">Tippe in deiner Zeile die Tage an. Die anderen siehst du nur.</span>`;
-    return;
+  }else{
+    meRow.classList.remove("locked-id");
+    meRow.innerHTML=`<span class="me-hint">Öffne deinen <b>persönlichen Link</b>, um deine Zeiten einzutragen – die Termine der anderen siehst du hier trotzdem.</span>`;
   }
-  const sel=document.getElementById("meSel");
-  if(!sel) return;
-  sel.innerHTML=`<option value="">— auswählen —</option>`+
-    PEOPLE.map(p=>`<option value="${p.key}">${p.name}</option>`).join("");
-  sel.value=state.me||"";
-  const hint=document.getElementById("meHint");
-  hint.textContent = state.me ? "Deine Zeile ist orange – tippe die Tage an, um durchzuschalten."
-    : "Wähle aus, wer du bist, um deine Zeiten einzutragen (andere kannst du nur lesen).";
 }
 
 /* ---------- calendar ---------- */
@@ -605,8 +609,8 @@ function renderCal(){
   const locked = !!state.fixed;
   const head=document.getElementById("headRow");
   head.innerHTML=`<th class="namecol">Teilnehmer</th>`+
-    DAYS.map((d,i)=>{const dt=addDays(viewMon,i);const we=i>=5;
-      return `<th class="${we?'wknd':''}">${d}<span class="d">${dt.getDate()}.${dt.getMonth()+1}.</span></th>`;}).join("");
+    DAYS.map((d,i)=>{const dt=addDays(viewMon,i);const we=i>=5;const ir=inRange(dt);
+      return `<th class="${we?'wknd':''}${ir?'':' oor'}">${d}<span class="d">${dt.getDate()}.${dt.getMonth()+1}.</span></th>`;}).join("");
   document.getElementById("kwLabel").textContent="KW "+isoWeek(viewMon);
   const sun=addDays(viewMon,6);
   document.getElementById("rangeLabel").textContent=
@@ -624,42 +628,52 @@ function renderCal(){
       <span class="pn">${p.name}</span></div>`;
     tr.appendChild(nameTd);
     for(let i=0;i<7;i++){
-      const dt=addDays(viewMon,i);const k=iso(dt);const we=i>=5;
+      const dt=addDays(viewMon,i);const k=iso(dt);const we=i>=5;const ir=inRange(dt);
       const v=(state.avail[k]&&state.avail[k][p.key])||"u";
-      const td=document.createElement("td");if(we)td.className="wknd";
-      const editable = isMe && !locked;
+      const td=document.createElement("td");td.className=(we?"wknd":"")+(ir?"":" oor");
+      const editable = isMe && !locked && ir;
       const b=document.createElement("button");
-      b.className="st "+(v==="u"?"":v)+(editable?" editable":"");
-      b.textContent=GLYPH[v];
-      b.setAttribute("aria-label",p.name+" "+fmtShort(dt)+": "+
-        ({yes:"Passt",maybe:"Eher fraglich",no:"Passt nicht",u:"Noch nicht gewählt"}[v]));
-      if(editable){
-        b.onclick=()=>{
-          const cur=(state.avail[k]&&state.avail[k][p.key])||"u";
-          setStatus(k, p.key, CYCLE[cur]);
-          renderCal();renderEval();
-        };
+      if(!ir){
+        b.className="st oor";b.textContent="·";b.disabled=true;b.setAttribute("aria-hidden","true");
+      }else{
+        b.className="st "+(v==="u"?"":v)+(editable?" editable":"");
+        b.textContent=GLYPH[v];
+        b.setAttribute("aria-label",p.name+" "+fmtShort(dt)+": "+
+          ({yes:"Passt",maybe:"Eher fraglich",no:"Passt nicht",u:"Noch nicht gewählt"}[v]));
+        if(editable){
+          b.onclick=()=>{
+            const cur=(state.avail[k]&&state.avail[k][p.key])||"u";
+            setStatus(k, p.key, CYCLE[cur]);
+            renderCal();renderEval();
+          };
+        }
       }
       td.appendChild(b);tr.appendChild(td);
     }
     body.appendChild(tr);
   });
+  // Navigation auf den Zeitraum begrenzen
+  document.getElementById("prevW").disabled = (viewMon<=RANGE_START_MON);
+  document.getElementById("nextW").disabled = (viewMon>=RANGE_END_MON);
 }
 
 /* ---------- evaluation ---------- */
-function weekScores(){
-  const arr=[];
-  for(let i=0;i<7;i++){
-    const dt=addDays(viewMon,i);const k=iso(dt);const m=state.avail[k]||{};
-    let yes=0,maybe=0;const who=[];
-    PEOPLE.forEach(p=>{const v=m[p.key];if(v==="yes"){yes++;who.push(p.key);}else if(v==="maybe")maybe++;});
-    arr.push({i,dt,k,yes,maybe,who,we:i>=5});
+/* Auswertung über den GANZEN Zeitraum (heute .. 13. Sept) */
+function rangeScores(){
+  const arr=[]; let d=new Date(TODAY);
+  while(d<=RANGE_END){
+    const k=iso(d);const m=state.avail[k]||{};
+    let yes=0,maybe=0;
+    PEOPLE.forEach(p=>{const v=m[p.key];if(v==="yes")yes++;else if(v==="maybe")maybe++;});
+    const we=((d.getDay()+6)%7)>=5;
+    arr.push({dt:new Date(d),k,yes,maybe,we});
+    d=addDays(d,1);
   }
   return arr;
 }
 function renderEval(){
-  const sc=weekScores();
-  const best=[...sc].sort((a,b)=> b.yes-a.yes || b.maybe-a.maybe || (b.we-a.we) || a.i-b.i)[0];
+  const sc=rangeScores();
+  const best=[...sc].sort((a,b)=> b.yes-a.yes || b.maybe-a.maybe || (b.we-a.we) || (a.dt-b.dt))[0];
   const bd=document.getElementById("bestDate");
   const bc=document.getElementById("bestCount");
   const dots=document.getElementById("dots");
@@ -674,7 +688,7 @@ function renderEval(){
     d.className="dot"+(v==="yes"?" on":v==="maybe"?" maybe":"");
     d.title=p.name;dots.appendChild(d);
   });
-  const rank=[...sc].filter(x=>x.yes>0).sort((a,b)=>b.yes-a.yes||b.maybe-a.maybe||a.i-b.i).slice(0,3);
+  const rank=[...sc].filter(x=>x.yes>0).sort((a,b)=>b.yes-a.yes||b.maybe-a.maybe||(a.dt-b.dt)).slice(0,3);
   const rl=document.getElementById("rankList");
   rl.innerHTML="";
   if(!rank.length){ rl.innerHTML=`<li><span class="rd" style="color:var(--muted)">Noch keine Termine im Rennen</span></li>`; }
@@ -698,11 +712,11 @@ function renderPhase(){
   document.getElementById("hostChk").checked=state.host;
   document.getElementById("hostBody").classList.toggle("on",state.host);
 
-  // fill fix selector with this week's days
+  // Fix-Auswahl: alle Tage im Zeitraum (chronologisch), Default = bester Termin
   const fixSel=document.getElementById("fixSel");
-  const sc=weekScores();
+  const sc=rangeScores();
   fixSel.innerHTML=sc.map(x=>`<option value="${x.k}">${DAYS[(x.dt.getDay()+6)%7]} ${x.dt.getDate()}.${x.dt.getMonth()+1}. — ${x.yes} Zusagen</option>`).join("");
-  const best=[...sc].sort((a,b)=>b.yes-a.yes||b.we-a.we||a.i-b.i)[0];
+  const best=[...sc].sort((a,b)=>b.yes-a.yes||b.we-a.we||(a.dt-b.dt))[0];
   if(best) fixSel.value=best.k;
 
   const banner=document.getElementById("fixedBanner");
@@ -756,10 +770,9 @@ function embers(){
 }
 
 /* ---------- wire up ---------- */
-document.getElementById("prevW").onclick=()=>{viewMon=addDays(viewMon,-7);renderAll();};
-document.getElementById("nextW").onclick=()=>{viewMon=addDays(viewMon,7);renderAll();};
-document.getElementById("todayW").onclick=()=>{viewMon=mondayOf(new Date());renderAll();};
-{const _ms=document.getElementById("meSel"); if(_ms) _ms.onchange=e=>{state.me=e.target.value||null;save();renderMe();renderCal();};}
+document.getElementById("prevW").onclick=()=>{viewMon=clampMon(addDays(viewMon,-7));renderAll();};
+document.getElementById("nextW").onclick=()=>{viewMon=clampMon(addDays(viewMon,7));renderAll();};
+document.getElementById("todayW").onclick=()=>{viewMon=new Date(RANGE_START_MON);renderAll();};
 document.getElementById("toCal").onclick=()=>document.getElementById("cal").scrollIntoView({behavior:"smooth"});
 document.getElementById("hostChk").onchange=e=>{state.host=e.target.checked;save();renderPhase();};
 document.getElementById("lockBtn").onclick=()=>{state.fixed=document.getElementById("fixSel").value;save();renderAll();};
