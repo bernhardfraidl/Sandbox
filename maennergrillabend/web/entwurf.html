@@ -504,15 +504,40 @@ function save(){ try{localStorage.setItem(LS, JSON.stringify(state));}catch(e){}
    Aktuell nur lokal (localStorage). Für Stufe B hier zusätzlich ans Backend
    senden – siehe BACKEND-SETUP.md. loadRemote()/onRemoteChange() sind die
    Gegenstücke fürs zentrale Laden bzw. Live-Updates ("alle sehen alle"). */
+/* Supabase-Client, falls konfiguriert (nur in der gehosteten index.html);
+   sonst lokaler Vorschau-Modus (z. B. Claude-Artifact ohne externes Skript). */
+const sb = (window.supabase && window.SB_URL)
+  ? window.supabase.createClient(window.SB_URL, window.SB_KEY) : null;
+
 function setStatus(dateKey, personKey, status){
+  // lokal (optimistisch sofort anzeigen)
   state.avail[dateKey]=state.avail[dateKey]||{};
-  if(status==="u") delete state.avail[dateKey][personKey];
+  if(status==="no") delete state.avail[dateKey][personKey];   // Standard X = keine Zeile
   else state.avail[dateKey][personKey]=status;
   save();
-  // STUFE B:  Backend.upsert(dateKey, personKey, status);
+  // Backend
+  if(sb){
+    if(status==="no") sb.from("availability").delete().match({day:dateKey,person:personKey}).then(()=>{},()=>{});
+    else sb.from("availability").upsert({day:dateKey,person:personKey,status}).then(()=>{},()=>{});
+  }
 }
-async function loadRemote(){ /* STUFE B: state.avail = await Backend.loadAll(); renderAll(); */ }
-function onRemoteChange(){  /* STUFE B: Live-Update -> state.avail mergen -> renderAll(); */ }
+async function loadRemote(){
+  if(!sb) return;
+  try{
+    const {data:av}=await sb.from("availability").select("day,person,status");
+    state.avail={};
+    (av||[]).forEach(r=>{ state.avail[r.day]=state.avail[r.day]||{}; state.avail[r.day][r.person]=r.status; });
+    const {data:st}=await sb.from("settings").select("find_start").eq("id",1).single();
+    if(st && st.find_start) state.findStart=new Date(st.find_start).getTime();
+    _wasFinding=null;
+    renderAll();
+  }catch(e){ /* offline -> lokaler Stand bleibt sichtbar */ }
+}
+function subscribeRemote(){
+  if(!sb) return;
+  sb.channel("mga").on("postgres_changes",
+    {event:"*",schema:"public",table:"availability"}, ()=>loadRemote()).subscribe();
+}
 
 /* ---------- date helpers ---------- */
 function mondayOf(d){const x=new Date(d);const g=(x.getDay()+6)%7;x.setDate(x.getDate()-g);x.setHours(0,0,0,0);return x;}
@@ -758,14 +783,16 @@ document.getElementById("toCal").onclick=()=>document.getElementById("cal").scro
 
 function renderAll(){renderCal();renderEval();renderPhase();tickCountdown();}
 
-/* Terminfindung startet jetzt und läuft 1 Woche (einmalig gesetzt) */
-if(!state.findStart){ state.findStart=Date.now(); save(); }
-
 /* Persönlicher Link? -> Identität automatisch aus dem Link */
 const linkId = identityFromLink();
 if(linkId){ state.me = linkId; state.identityLocked = true; save(); }
 
+if(sb){
+  loadRemote().then(subscribeRemote);                 // Backend: gemeinsame Daten + Live-Updates
+}else{
+  if(!state.findStart){ state.findStart=Date.now(); save(); }   // lokaler Vorschau-Modus
+}
+
 renderTrupp();renderAll();embers();
-/* STUFE B: loadRemote(); + Live-Abo starten (onRemoteChange) */
 setInterval(tickCountdown,1000);
 </script>
