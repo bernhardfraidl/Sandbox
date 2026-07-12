@@ -16,6 +16,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -38,6 +40,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -60,6 +64,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -82,6 +88,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -104,6 +112,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -126,6 +136,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -148,6 +160,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -170,6 +184,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
@@ -192,6 +208,8 @@ So geht's (30 Sek. ⏱️):
 
 ⏳ Du hast 1 Woche Zeit. Danach gewinnt automatisch der Tag mit
 den meisten Zusagen – und der Countdown läuft! 🔥
+⏰ Die genaue Uhrzeit machen wir dann in der WhatsApp-Gruppe aus,
+sobald der Tag steht – wird aber vermutlich später Nachmittag.
 Wer nicht einträgt, grillt Tofu. 🌱😂
 
 👉 Dein persönlicher Link (nur für dich):
