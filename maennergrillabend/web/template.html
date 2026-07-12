@@ -410,11 +410,9 @@
           <button id="prevW">‹ Vorige</button>
           <div class="wk"><strong id="kwLabel"></strong><span id="rangeLabel"></span></div>
           <button id="nextW">Nächste ›</button>
-          <button id="todayW">Heute</button>
+          <button id="todayW">Anfang</button>
         </div>
       </div>
-
-      <div class="me-row" id="meRow"></div>
 
       <div class="table-wrap">
         <table id="calTable">
@@ -457,21 +455,9 @@
 
       <section class="panel phase">
         <div class="status-line" id="statusLine"><span class="pip"></span><span id="statusTxt">Terminfindung läuft</span></div>
-        <div class="prog"><i id="progBar" style="width:40%"></i></div>
+        <div class="prog"><i id="progBar" style="width:2%"></i></div>
         <p class="phase-msg" id="phaseMsg">Eintragungen noch möglich</p>
-
-        <div class="host">
-          <div class="host-toggle">
-            <span class="lbl">Gastgeber-Modus</span>
-            <label class="switch"><input type="checkbox" id="hostChk"><span class="slider"></span></label>
-          </div>
-          <div class="host-body" id="hostBody">
-            <select id="fixSel"></select>
-            <button class="btn-ghost btn-lock" id="lockBtn">Termin verbindlich festlegen</button>
-            <div class="fixed-banner" id="fixedBanner"></div>
-            <button class="btn-ghost" id="reopenBtn" style="margin-top:9px;display:none">Terminfindung wieder öffnen</button>
-          </div>
-        </div>
+        <div class="fixed-banner" id="fixedBanner"></div>
       </section>
     </aside>
   </div>
@@ -535,18 +521,18 @@ function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=(x.getUTCDay()+6)%7;x.setUTCDate(x.getUTCDate()-day+3);const first=new Date(Date.UTC(x.getUTCFullYear(),0,4));return 1+Math.round(((x-first)/86400000-3+((first.getUTCDay()+6)%7))/7);}
 function fmtShort(d){return DAYS[(d.getDay()+6)%7]+" "+d.getDate()+"."+(d.getMonth()+1)+".";}
 
-/* ---------- Zeitraum: heute bis 13. September ---------- */
+/* ---------- Zeitraum: ab MORGEN bis 13. September ---------- */
 const TODAY=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
+const RANGE_START=addDays(TODAY,1);                          // ab morgen (heute + Vortage raus)
 let RANGE_END=new Date(TODAY.getFullYear(),8,13);            // 13. Sept (Monat 8 = Sept)
-if(RANGE_END<TODAY) RANGE_END=new Date(TODAY.getFullYear()+1,8,13);
+if(RANGE_END<RANGE_START) RANGE_END=new Date(TODAY.getFullYear()+1,8,13);
 RANGE_END.setHours(0,0,0,0);
-const RANGE_START_MON=mondayOf(TODAY);
-const RANGE_END_MON=mondayOf(RANGE_END);
-function inRange(d){return d>=TODAY && d<=RANGE_END;}
-function clampMon(m){ if(m<RANGE_START_MON) return new Date(RANGE_START_MON);
-  if(m>RANGE_END_MON) return new Date(RANGE_END_MON); return m; }
+function dayDiff(a,b){return Math.round((b-a)/86400000);}
+const MAX_START=addDays(RANGE_START, Math.max(0,Math.floor(dayDiff(RANGE_START,RANGE_END)/7))*7);
+function clampStart(s){ return s<RANGE_START?new Date(RANGE_START):(s>MAX_START?new Date(MAX_START):s); }
+function windowDays(){ const arr=[]; for(let i=0;i<7;i++){const dt=addDays(viewStart,i); if(dt>RANGE_END) break; arr.push(dt);} return arr; }
 
-let viewMon = new Date(RANGE_START_MON);
+let viewStart = new Date(RANGE_START);
 
 /* ---------- seed demo data (first visit only) ---------- */
 function seed(){
@@ -563,17 +549,15 @@ function seed(){
     ["y","m","y","y","y","y","m"],
   ];
   const map={y:"yes",m:"maybe",n:"no"};
-  [0,1].forEach(wk=>{
-    const mon=addDays(viewMon,wk*7);
+  for(let dd=0;dd<14;dd++){
+    const dt=addDays(RANGE_START,dd); if(dt>RANGE_END) break;
+    const k=iso(dt);
+    state.avail[k]=state.avail[k]||{};
     PEOPLE.forEach((p,pi)=>{
-      for(let dd=0;dd<7;dd++){
-        const k=iso(addDays(mon,dd));
-        state.avail[k]=state.avail[k]||{};
-        const v=patt[pi][(dd+wk)%7];
-        if(!(p.key in state.avail[k])) state.avail[k][p.key]=map[v];
-      }
+      const v=patt[pi][dd%7];
+      if(!(p.key in state.avail[k])) state.avail[k][p.key]=map[v];
     });
-  });
+  }
   save();
 }
 
@@ -590,31 +574,20 @@ function renderTrupp(){
   });
 }
 
-/* ---------- me selector / Identitäts-Abzeichen ---------- */
-function renderMe(){
-  const meRow=document.querySelector(".me-row");
-  if(state.identityLocked){
-    // Identität kommt aus dem persönlichen Link -> nur "Du bist ..."
-    meRow.classList.add("locked-id");
-    meRow.innerHTML=`<span class="me-badge">👤 Du bist <b>${nameOf(state.me)}</b></span>
-      <span class="me-hint">Tippe in deiner Zeile die Tage an. Die anderen siehst du nur.</span>`;
-  }else{
-    meRow.classList.remove("locked-id");
-    meRow.innerHTML=`<span class="me-hint">Öffne deinen <b>persönlichen Link</b>, um deine Zeiten einzutragen – die Termine der anderen siehst du hier trotzdem.</span>`;
-  }
-}
-
 /* ---------- calendar ---------- */
 function renderCal(){
-  const locked = !!state.fixed;
+  const locked = !isFinding();          // nach Ablauf der Terminfindungs-Woche gesperrt
+  const days=windowDays();
   const head=document.getElementById("headRow");
   head.innerHTML=`<th class="namecol">Teilnehmer</th>`+
-    DAYS.map((d,i)=>{const dt=addDays(viewMon,i);const we=i>=5;const ir=inRange(dt);
-      return `<th class="${we?'wknd':''}${ir?'':' oor'}">${d}<span class="d">${dt.getDate()}.${dt.getMonth()+1}.</span></th>`;}).join("");
-  document.getElementById("kwLabel").textContent="KW "+isoWeek(viewMon);
-  const sun=addDays(viewMon,6);
-  document.getElementById("rangeLabel").textContent=
-    viewMon.getDate()+". "+MONTHS[viewMon.getMonth()]+" – "+sun.getDate()+". "+MONTHS[sun.getMonth()];
+    days.map(dt=>{const dow=(dt.getDay()+6)%7;const we=dow>=5;
+      return `<th class="${we?'wknd':''}">${DAYS[dow]}<span class="d">${dt.getDate()}.${dt.getMonth()+1}.</span></th>`;}).join("");
+  const first=days[0], last=days[days.length-1];
+  const span = first.getMonth()===last.getMonth()
+    ? `${first.getDate()}. – ${last.getDate()}. ${MONTHS[last.getMonth()]}`
+    : `${first.getDate()}. ${MONTHS[first.getMonth()]} – ${last.getDate()}. ${MONTHS[last.getMonth()]}`;
+  document.getElementById("kwLabel").textContent=span;
+  document.getElementById("rangeLabel").textContent="bis 13. September";
 
   const body=document.getElementById("bodyRows");
   body.innerHTML="";
@@ -627,40 +600,36 @@ function renderCal(){
       <img src="${PHOTOS[p.key]}" alt="" style="object-position:${p.pos}">
       <span class="pn">${p.name}</span></div>`;
     tr.appendChild(nameTd);
-    for(let i=0;i<7;i++){
-      const dt=addDays(viewMon,i);const k=iso(dt);const we=i>=5;const ir=inRange(dt);
+    days.forEach(dt=>{
+      const k=iso(dt);const dow=(dt.getDay()+6)%7;const we=dow>=5;
       const v=(state.avail[k]&&state.avail[k][p.key])||"u";
-      const td=document.createElement("td");td.className=(we?"wknd":"")+(ir?"":" oor");
-      const editable = isMe && !locked && ir;
+      const td=document.createElement("td");if(we)td.className="wknd";
+      const editable = isMe && !locked;
       const b=document.createElement("button");
-      if(!ir){
-        b.className="st oor";b.textContent="·";b.disabled=true;b.setAttribute("aria-hidden","true");
-      }else{
-        b.className="st "+(v==="u"?"":v)+(editable?" editable":"");
-        b.textContent=GLYPH[v];
-        b.setAttribute("aria-label",p.name+" "+fmtShort(dt)+": "+
-          ({yes:"Passt",maybe:"Eher fraglich",no:"Passt nicht",u:"Noch nicht gewählt"}[v]));
-        if(editable){
-          b.onclick=()=>{
-            const cur=(state.avail[k]&&state.avail[k][p.key])||"u";
-            setStatus(k, p.key, CYCLE[cur]);
-            renderCal();renderEval();
-          };
-        }
+      b.className="st "+(v==="u"?"":v)+(editable?" editable":"");
+      b.textContent=GLYPH[v];
+      b.setAttribute("aria-label",p.name+" "+fmtShort(dt)+": "+
+        ({yes:"Passt",maybe:"Eher fraglich",no:"Passt nicht",u:"Noch nicht gewählt"}[v]));
+      if(editable){
+        b.onclick=()=>{
+          const cur=(state.avail[k]&&state.avail[k][p.key])||"u";
+          setStatus(k, p.key, CYCLE[cur]);
+          renderCal();renderEval();
+        };
       }
       td.appendChild(b);tr.appendChild(td);
-    }
+    });
     body.appendChild(tr);
   });
   // Navigation auf den Zeitraum begrenzen
-  document.getElementById("prevW").disabled = (viewMon<=RANGE_START_MON);
-  document.getElementById("nextW").disabled = (viewMon>=RANGE_END_MON);
+  document.getElementById("prevW").disabled = (viewStart<=RANGE_START);
+  document.getElementById("nextW").disabled = (viewStart>=MAX_START);
 }
 
 /* ---------- evaluation ---------- */
 /* Auswertung über den GANZEN Zeitraum (heute .. 13. Sept) */
 function rangeScores(){
-  const arr=[]; let d=new Date(TODAY);
+  const arr=[]; let d=new Date(RANGE_START);
   while(d<=RANGE_END){
     const k=iso(d);const m=state.avail[k]||{};
     let yes=0,maybe=0;
@@ -701,55 +670,67 @@ function renderEval(){
   });
 }
 
-/* ---------- host / phases ---------- */
+/* ---------- Countdown: 1 Woche Terminfindung -> dann automatisch Grillabend ---------- */
+const FIND_MS = 7*86400000;                       // 1 Woche für die Terminfindung
+function findDeadline(){ return state.findStart + FIND_MS; }
+function isFinding(){ return Date.now() < findDeadline(); }
+/* Grillabend = Termin mit den meisten Zusagen (automatisch) */
+function grillDate(){
+  const sc=rangeScores().filter(x=>x.yes>0)
+    .sort((a,b)=>b.yes-a.yes||b.maybe-a.maybe||b.we-a.we||(a.dt-b.dt));
+  if(!sc.length) return null;
+  const d=new Date(sc[0].dt); d.setHours(18,0,0,0); return d;
+}
 function renderPhase(){
-  const locked=!!state.fixed;
+  const finding=isFinding();
   const sline=document.getElementById("statusLine");
   const stxt=document.getElementById("statusTxt");
   const msg=document.getElementById("phaseMsg");
   const cdSub=document.getElementById("cdSub");
   const grid=document.getElementById("cdGrid");
-  document.getElementById("hostChk").checked=state.host;
-  document.getElementById("hostBody").classList.toggle("on",state.host);
-
-  // Fix-Auswahl: alle Tage im Zeitraum (chronologisch), Default = bester Termin
-  const fixSel=document.getElementById("fixSel");
-  const sc=rangeScores();
-  fixSel.innerHTML=sc.map(x=>`<option value="${x.k}">${DAYS[(x.dt.getDay()+6)%7]} ${x.dt.getDate()}.${x.dt.getMonth()+1}. — ${x.yes} Zusagen</option>`).join("");
-  const best=[...sc].sort((a,b)=>b.yes-a.yes||b.we-a.we||(a.dt-b.dt))[0];
-  if(best) fixSel.value=best.k;
-
   const banner=document.getElementById("fixedBanner");
-  const reopen=document.getElementById("reopenBtn");
-  if(locked){
-    sline.classList.add("locked");stxt.textContent="Termin steht fest";
-    msg.textContent="Die Terminfindung ist abgeschlossen.";
-    document.getElementById("progBar").style.width="100%";
-    cdSub.textContent="Bis zum Grillabend";
-    grid.querySelectorAll(".cd-cell").forEach(c=>c.classList.remove("cd-off"));
-    const fd=new Date(state.fixed+"T18:00:00");
-    banner.classList.add("on");
-    banner.textContent="🔥 Grillabend: "+DAYS[(fd.getDay()+6)%7]+", "+fd.getDate()+". "+MONTHS[fd.getMonth()]+" · 18:00 Uhr";
-    reopen.style.display="block";
-  }else{
-    sline.classList.remove("locked");stxt.textContent="Terminfindung läuft";
-    msg.textContent="Eintragungen noch möglich";
-    document.getElementById("progBar").style.width="40%";
-    cdSub.textContent="Countdown startet, sobald der Termin steht";
-    grid.querySelectorAll(".cd-cell").forEach(c=>c.classList.add("cd-off"));
+  grid.querySelectorAll(".cd-cell").forEach(c=>c.classList.remove("cd-off"));
+  if(finding){
+    sline.classList.remove("locked");
+    stxt.textContent="Terminfindung läuft";
+    cdSub.textContent="Countdown für die Terminfindung";
+    const left=findDeadline()-Date.now();
+    const dleft=Math.max(0,Math.ceil(left/86400000));
+    msg.textContent="Eintragungen noch möglich – noch "+dleft+" "+(dleft===1?"Tag":"Tage")+".";
+    document.getElementById("progBar").style.width=Math.max(2,Math.min(100,(1-left/FIND_MS)*100)).toFixed(0)+"%";
     banner.classList.remove("on");
-    reopen.style.display="none";
+  }else{
+    const gd=grillDate();
+    sline.classList.add("locked");
+    cdSub.textContent="Bis zum Grillabend";
+    document.getElementById("progBar").style.width="100%";
+    if(gd){
+      stxt.textContent="Termin steht fest";
+      msg.textContent="Die Terminfindung ist abgeschlossen – der Termin steht.";
+      banner.classList.add("on");
+      banner.textContent="🔥 Grillabend: "+DAYS[(gd.getDay()+6)%7]+", "+gd.getDate()+". "+MONTHS[gd.getMonth()]+" · 18:00 Uhr";
+    }else{
+      stxt.textContent="Kein Termin";
+      msg.textContent="Es wurde nichts eingetragen – kein Termin gefunden.";
+      banner.classList.remove("on");
+    }
   }
 }
+let _wasFinding=null;
 function tickCountdown(){
-  if(!state.fixed){["cdD","cdH","cdM","cdS"].forEach(id=>document.getElementById(id).textContent="–");return;}
-  const t=new Date(state.fixed+"T18:00:00")-new Date();
-  const cl=Math.max(0,t);
+  const now=Date.now();
+  const finding=now<findDeadline();
+  let target;
+  if(finding){ target=findDeadline(); }
+  else { const gd=grillDate(); target = gd?gd.getTime():findDeadline(); }
+  const cl=Math.max(0,target-now);
   const d=Math.floor(cl/86400000),h=Math.floor(cl/3600000)%24,m=Math.floor(cl/60000)%60,s=Math.floor(cl/1000)%60;
   document.getElementById("cdD").textContent=d;
   document.getElementById("cdH").textContent=String(h).padStart(2,"0");
   document.getElementById("cdM").textContent=String(m).padStart(2,"0");
   document.getElementById("cdS").textContent=String(s).padStart(2,"0");
+  if(_wasFinding!==null && _wasFinding!==finding){ renderCal(); renderPhase(); renderEval(); }
+  _wasFinding=finding;
 }
 
 /* ---------- embers canvas ---------- */
@@ -770,21 +751,21 @@ function embers(){
 }
 
 /* ---------- wire up ---------- */
-document.getElementById("prevW").onclick=()=>{viewMon=clampMon(addDays(viewMon,-7));renderAll();};
-document.getElementById("nextW").onclick=()=>{viewMon=clampMon(addDays(viewMon,7));renderAll();};
-document.getElementById("todayW").onclick=()=>{viewMon=new Date(RANGE_START_MON);renderAll();};
+document.getElementById("prevW").onclick=()=>{viewStart=clampStart(addDays(viewStart,-7));renderAll();};
+document.getElementById("nextW").onclick=()=>{viewStart=clampStart(addDays(viewStart,7));renderAll();};
+document.getElementById("todayW").onclick=()=>{viewStart=new Date(RANGE_START);renderAll();};
 document.getElementById("toCal").onclick=()=>document.getElementById("cal").scrollIntoView({behavior:"smooth"});
-document.getElementById("hostChk").onchange=e=>{state.host=e.target.checked;save();renderPhase();};
-document.getElementById("lockBtn").onclick=()=>{state.fixed=document.getElementById("fixSel").value;save();renderAll();};
-document.getElementById("reopenBtn").onclick=()=>{state.fixed=null;save();renderAll();};
 
 function renderAll(){renderCal();renderEval();renderPhase();tickCountdown();}
 
-/* Persönlicher Link? -> Identität festlegen, "Ich bin"-Auswahl entfällt */
+/* Terminfindung startet jetzt und läuft 1 Woche (einmalig gesetzt) */
+if(!state.findStart){ state.findStart=Date.now(); save(); }
+
+/* Persönlicher Link? -> Identität automatisch aus dem Link */
 const linkId = identityFromLink();
 if(linkId){ state.me = linkId; state.identityLocked = true; save(); }
 
-seed();renderTrupp();renderMe();renderAll();embers();
+seed();renderTrupp();renderAll();embers();
 /* STUFE B: loadRemote(); + Live-Abo starten (onRemoteChange) */
 setInterval(tickCountdown,1000);
 </script>
