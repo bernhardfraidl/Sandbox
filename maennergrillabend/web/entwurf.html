@@ -422,10 +422,9 @@
       </div>
 
       <div class="legend">
+        <span><i class="lg no">✕</i> Passt nicht (Standard)</span>
         <span><i class="lg yes">✓</i> Passt</span>
         <span><i class="lg maybe">~</i> Eher fraglich</span>
-        <span><i class="lg no">✕</i> Passt nicht</span>
-        <span><i class="lg none">○</i> Noch nicht gewählt</span>
       </div>
     </section>
 
@@ -480,8 +479,9 @@ const PEOPLE = [
 ];
 const DAYS = ["Mo","Di","Mi","Do","Fr","Sa","So"];
 const MONTHS = ["Jan","Feb","März","Apr","Mai","Juni","Juli","Aug","Sep","Okt","Nov","Dez"];
-const CYCLE = {undefined:"yes", u:"yes", yes:"maybe", maybe:"no", no:"u"};
-const GLYPH = {yes:"✓", maybe:"~", no:"✕", u:"○"};
+const CYCLE = {no:"yes", yes:"maybe", maybe:"no"};   // Standard X -> Grün -> Gelb -> X
+const GLYPH = {yes:"✓", maybe:"~", no:"✕"};
+function isWknd(dt){return ((dt.getDay()+6)%7)>=4;}   // Fr, Sa, So orange
 
 /* ---------- Identität aus persönlichem Link (?me=TOKEN) ---------- */
 const PLINKS = {"5rpq6g": "bernhard", "vjhpk8": "martin_w", "833vq4": "alex", "xx5ask": "ludwig", "9y6zag": "martin_f", "64h7qh": "dominik", "yxfyvc": "seraphin", "qn4b2k": "martin_h", "jas8mv": "gerhard"};            // { token: personenKey }
@@ -580,7 +580,7 @@ function renderCal(){
   const days=windowDays();
   const head=document.getElementById("headRow");
   head.innerHTML=`<th class="namecol">Teilnehmer</th>`+
-    days.map(dt=>{const dow=(dt.getDay()+6)%7;const we=dow>=5;
+    days.map(dt=>{const dow=(dt.getDay()+6)%7;const we=isWknd(dt);
       return `<th class="${we?'wknd':''}">${DAYS[dow]}<span class="d">${dt.getDate()}.${dt.getMonth()+1}.</span></th>`;}).join("");
   const first=days[0], last=days[days.length-1];
   const span = first.getMonth()===last.getMonth()
@@ -601,18 +601,18 @@ function renderCal(){
       <span class="pn">${p.name}</span></div>`;
     tr.appendChild(nameTd);
     days.forEach(dt=>{
-      const k=iso(dt);const dow=(dt.getDay()+6)%7;const we=dow>=5;
-      const v=(state.avail[k]&&state.avail[k][p.key])||"u";
+      const k=iso(dt);const we=isWknd(dt);
+      const v=(state.avail[k]&&state.avail[k][p.key])||"no";   // Standard: X
       const td=document.createElement("td");if(we)td.className="wknd";
       const editable = isMe && !locked;
       const b=document.createElement("button");
-      b.className="st "+(v==="u"?"":v)+(editable?" editable":"");
+      b.className="st "+v+(editable?" editable":"");
       b.textContent=GLYPH[v];
       b.setAttribute("aria-label",p.name+" "+fmtShort(dt)+": "+
-        ({yes:"Passt",maybe:"Eher fraglich",no:"Passt nicht",u:"Noch nicht gewählt"}[v]));
+        ({yes:"Passt",maybe:"Eher fraglich",no:"Passt nicht"}[v]));
       if(editable){
         b.onclick=()=>{
-          const cur=(state.avail[k]&&state.avail[k][p.key])||"u";
+          const cur=(state.avail[k]&&state.avail[k][p.key])||"no";
           setStatus(k, p.key, CYCLE[cur]);
           renderCal();renderEval();
         };
@@ -634,7 +634,7 @@ function rangeScores(){
     const k=iso(d);const m=state.avail[k]||{};
     let yes=0,maybe=0;
     PEOPLE.forEach(p=>{const v=m[p.key];if(v==="yes")yes++;else if(v==="maybe")maybe++;});
-    const we=((d.getDay()+6)%7)>=5;
+    const we=isWknd(d);
     arr.push({dt:new Date(d),k,yes,maybe,we});
     d=addDays(d,1);
   }
@@ -765,7 +765,7 @@ if(!state.findStart){ state.findStart=Date.now(); save(); }
 const linkId = identityFromLink();
 if(linkId){ state.me = linkId; state.identityLocked = true; save(); }
 
-seed();renderTrupp();renderAll();embers();
+renderTrupp();renderAll();embers();
 /* STUFE B: loadRemote(); + Live-Abo starten (onRemoteChange) */
 setInterval(tickCountdown,1000);
 </script>
