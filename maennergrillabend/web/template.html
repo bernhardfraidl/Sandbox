@@ -216,16 +216,17 @@
   .pcell.me-active .pn{color:var(--fire)}
 
   .st{
-    width:36px;height:36px;border-radius:50%;border:1px solid var(--line);
+    width:36px;height:36px;border-radius:50%;border:2px solid var(--line);
     background:#140f0b;color:var(--none);font-size:16px;font-weight:800;
     display:inline-flex;align-items:center;justify-content:center;cursor:default;line-height:1;
     transition:transform .08s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
   }
   .st.editable{cursor:pointer}
-  .st.editable:hover{transform:scale(1.12);border-color:var(--fire)}
-  .st.yes{background:rgba(92,194,76,.16);border-color:var(--yes);color:var(--yes)}
-  .st.maybe{background:rgba(245,166,35,.16);border-color:var(--maybe);color:var(--maybe)}
-  .st.no{background:rgba(229,67,43,.16);border-color:var(--no);color:var(--no)}
+  /* Hover nur auf echten Zeiger-Geräten -> am Handy kein "klebender" oranger Rand */
+  @media(hover:hover){ .st.editable:hover{transform:scale(1.1)} }
+  .st.yes{background:rgba(92,194,76,.22);border-color:var(--yes);color:var(--yes)}
+  .st.maybe{background:rgba(245,166,35,.22);border-color:var(--maybe);color:var(--maybe)}
+  .st.no{background:rgba(229,67,43,.22);border-color:var(--no);color:var(--no)}
   .st:focus-visible{outline:2px solid var(--fire);outline-offset:2px}
   .st.oor{opacity:.2;border-style:dashed;color:var(--none)}
   th.oor,td.oor{opacity:.4}
