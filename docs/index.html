@@ -494,6 +494,7 @@ const MONTHS = ["Jan","Feb","März","Apr","Mai","Juni","Juli","Aug","Sep","Okt",
 const CYCLE = {no:"yes", yes:"maybe", maybe:"no"};   // Standard X -> Grün -> Gelb -> X
 const GLYPH = {yes:"✓", maybe:"~", no:"✕"};
 function isWknd(dt){return ((dt.getDay()+6)%7)>=4;}   // Fr, Sa, So orange
+const HOST = "bernhard";                              // Gastgeber MUSS am Termin können
 
 /* ---------- Identität aus persönlichem Link (?me=TOKEN) ---------- */
 const PLINKS = {"5rpq6g": "bernhard", "vjhpk8": "martin_w", "833vq4": "alex", "xx5ask": "ludwig", "9y6zag": "martin_f", "64h7qh": "dominik", "yxfyvc": "seraphin", "qn4b2k": "martin_h", "jas8mv": "gerhard"};            // { token: personenKey }
@@ -673,21 +674,23 @@ function rangeScores(){
     let yes=0,maybe=0;
     PEOPLE.forEach(p=>{const v=m[p.key];if(v==="yes")yes++;else if(v==="maybe")maybe++;});
     const we=isWknd(d);
-    arr.push({dt:new Date(d),k,yes,maybe,we});
+    const host = m[HOST]==="yes";                 // kann der Gastgeber an dem Tag?
+    arr.push({dt:new Date(d),k,yes,maybe,we,host});
     d=addDays(d,1);
   }
   return arr;
 }
 function renderEval(){
   const sc=rangeScores();
-  const best=[...sc].sort((a,b)=> b.yes-a.yes || b.maybe-a.maybe || (b.we-a.we) || (a.dt-b.dt))[0];
+  const valid=sc.filter(x=>x.host);   // nur Tage, an denen der Gastgeber kann
+  const best=[...valid].sort((a,b)=> b.yes-a.yes || b.maybe-a.maybe || (b.we-a.we) || (a.dt-b.dt))[0];
   const bd=document.getElementById("bestDate");
   const bc=document.getElementById("bestCount");
   const dots=document.getElementById("dots");
-  if(best && best.yes>0){
+  if(best){
     bd.textContent=DAYS[(best.dt.getDay()+6)%7]+" "+best.dt.getDate()+". "+MONTHS[best.dt.getMonth()];
     bc.innerHTML=`<b>${best.yes} von ${PEOPLE.length}</b> können`;
-  } else { bd.textContent="—"; bc.textContent="Noch keine klaren Zusagen"; }
+  } else { bd.textContent="—"; bc.textContent="Warte auf die Termine vom Gastgeber (Bernhard)"; }
   dots.innerHTML="";
   PEOPLE.forEach(p=>{
     const v=best?(state.avail[best.k]&&state.avail[best.k][p.key]):null;
@@ -695,7 +698,7 @@ function renderEval(){
     d.className="dot"+(v==="yes"?" on":v==="maybe"?" maybe":"");
     d.title=p.name;dots.appendChild(d);
   });
-  const rank=[...sc].filter(x=>x.yes>0).sort((a,b)=>b.yes-a.yes||b.maybe-a.maybe||(a.dt-b.dt)).slice(0,3);
+  const rank=[...valid].sort((a,b)=>b.yes-a.yes||b.maybe-a.maybe||(a.dt-b.dt)).slice(0,3);
   const rl=document.getElementById("rankList");
   rl.innerHTML="";
   if(!rank.length){ rl.innerHTML=`<li><span class="rd" style="color:var(--muted)">Noch keine Termine im Rennen</span></li>`; }
@@ -714,7 +717,8 @@ function findDeadline(){ return state.findStart + FIND_MS; }
 function isFinding(){ return Date.now() < findDeadline(); }
 /* Grillabend = Termin mit den meisten Zusagen (automatisch) */
 function grillDate(){
-  const sc=rangeScores().filter(x=>x.yes>0)
+  // nur Tage, an denen der Gastgeber kann; darunter der mit den meisten Zusagen
+  const sc=rangeScores().filter(x=>x.host)
     .sort((a,b)=>b.yes-a.yes||b.maybe-a.maybe||b.we-a.we||(a.dt-b.dt));
   if(!sc.length) return null;
   const d=new Date(sc[0].dt); d.setHours(18,0,0,0); return d;
@@ -749,7 +753,7 @@ function renderPhase(){
       banner.textContent="🔥 Grillabend: "+DAYS[(gd.getDay()+6)%7]+", "+gd.getDate()+". "+MONTHS[gd.getMonth()]+" · 18:00 Uhr";
     }else{
       stxt.textContent="Kein Termin";
-      msg.textContent="Es wurde nichts eingetragen – kein Termin gefunden.";
+      msg.textContent="Kein Tag gefunden, an dem der Gastgeber (Bernhard) konnte.";
       banner.classList.remove("on");
     }
   }
