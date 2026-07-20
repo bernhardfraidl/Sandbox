@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="900" viewBox="0 0 1040 900" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#1f5fbf"/>
+    </marker>
+    <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#0a8f4f"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1040" height="900" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="40" y="46" font-size="26" font-weight="bold" fill="#111">REGELMÄSSIGES SECHSECK – vollständig bemaßt</text>
+  <text x="40" y="74" font-size="16" fill="#333">Abstand zwischen allen parallelen Seiten (flach zu flach): 1,26 m &#8226; Materialstärke: 19 mm</text>
+
+  <!-- ===================== HEXAGON =====================
+       Mittelpunkt (460,400), Maßstab 300 px/m
+       R=218.24  halbe Breite=109.12  Apothem=189.0 -->
+  <polygon points="678.24,400 569.12,211 350.88,211 241.76,400 350.88,589 569.12,589"
+           fill="#e8c9a0" stroke="#6b4a27" stroke-width="2.5" stroke-linejoin="round"/>
+  <polygon points="678.24,400 569.12,211 350.88,211 241.76,400 350.88,589 569.12,589"
+           fill="none" stroke="#6b4a27" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Hilfslinien Mitte -->
+  <line x1="460" y1="400" x2="678.24" y2="400" stroke="#999" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="460" y1="400" x2="569.12" y2="211" stroke="#999" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="460" y1="400" x2="460"    y2="211" stroke="#999" stroke-width="1" stroke-dasharray="5 4"/>
+  <circle cx="460" cy="400" r="3.5" fill="#111"/>
+  <text x="470" y="418" font-size="13" fill="#555">Mitte (0|0)</text>
+
+  <!-- Eckennummern -->
+  <text x="688" y="405" font-size="13" fill="#111">1</text>
+  <text x="576" y="205" font-size="13" fill="#111">2</text>
+  <text x="336" y="205" font-size="13" fill="#111">3</text>
+  <text x="222" y="405" font-size="13" fill="#111">4</text>
+  <text x="336" y="606" font-size="13" fill="#111">5</text>
+  <text x="576" y="606" font-size="13" fill="#111">6</text>
+
+  <!-- ===== Maß: flach-zu-flach 1,26 m (links, vertikal) ===== -->
+  <line x1="200" y1="211" x2="350.88" y2="211" stroke="#0a8f4f" stroke-width="1"/>
+  <line x1="200" y1="589" x2="350.88" y2="589" stroke="#0a8f4f" stroke-width="1"/>
+  <line x1="215" y1="211" x2="215" y2="589" stroke="#0a8f4f" stroke-width="2" marker-start="url(#arrS)" marker-end="url(#arrS)"/>
+  <rect x="150" y="378" width="120" height="44" rx="5" fill="#e4f5ea" stroke="#0a8f4f"/>
+  <text x="210" y="396" font-size="16" font-weight="bold" fill="#0a6b3c" text-anchor="middle">1,26 m</text>
+  <text x="210" y="414" font-size="11" fill="#0a6b3c" text-anchor="middle">flach zu flach</text>
+
+  <!-- ===== Maß: Spitze zu Spitze 1,4549 m (unten, horizontal) ===== -->
+  <line x1="678.24" y1="400" x2="678.24" y2="680" stroke="#1f5fbf" stroke-width="1"/>
+  <line x1="241.76" y1="400" x2="241.76" y2="680" stroke="#1f5fbf" stroke-width="1"/>
+  <line x1="241.76" y1="665" x2="678.24" y2="665" stroke="#1f5fbf" stroke-width="2" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <rect x="380" y="686" width="160" height="44" rx="5" fill="#eaf1fc" stroke="#1f5fbf"/>
+  <text x="460" y="704" font-size="16" font-weight="bold" fill="#123f8f" text-anchor="middle">1,4549 m</text>
+  <text x="460" y="722" font-size="11" fill="#123f8f" text-anchor="middle">Spitze zu Spitze (Eckenmaß)</text>
+
+  <!-- ===== Maß: Seitenlänge (Schenkel) obere Kante 0,7275 m ===== -->
+  <line x1="350.88" y1="211" x2="350.88" y2="150" stroke="#1f5fbf" stroke-width="1"/>
+  <line x1="569.12" y1="211" x2="569.12" y2="150" stroke="#1f5fbf" stroke-width="1"/>
+  <line x1="350.88" y1="165" x2="569.12" y2="165" stroke="#1f5fbf" stroke-width="2" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <rect x="380" y="110" width="160" height="46" rx="5" fill="#eaf1fc" stroke="#1f5fbf"/>
+  <text x="460" y="129" font-size="16" font-weight="bold" fill="#123f8f" text-anchor="middle">0,7275 m</text>
+  <text x="460" y="147" font-size="11" fill="#123f8f" text-anchor="middle">Seitenlänge – alle 6 gleich</text>
+
+  <!-- ===== Radius Mitte->Ecke ===== -->
+  <rect x="500" y="300" width="150" height="24" rx="4" fill="#fff" stroke="#999"/>
+  <text x="575" y="317" font-size="13" fill="#333" text-anchor="middle">R = 0,7275 m (Mitte→Ecke)</text>
+
+  <!-- ===== Apothem Mitte->Kante ===== -->
+  <text x="466" y="300" font-size="12" fill="#555">0,63 m</text>
+
+  <!-- ===== Innenwinkel 120° an Ecke 1 ===== -->
+  <path d="M 662 384 A 22 22 0 0 1 662 416" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="628" y="404" font-size="14" fill="#111">120°</text>
+
+  <!-- ===================== TABELLE ===================== -->
+  <text x="750" y="120" font-size="16" font-weight="bold" fill="#111">Alle Maße</text>
+  <g font-size="14" fill="#222">
+    <rect x="750" y="132" width="260" height="196" rx="6" fill="#fafafa" stroke="#ccc"/>
+    <text x="764" y="158">flach zu flach</text>            <text x="998" y="158" text-anchor="end" font-weight="bold">1,2600 m</text>
+    <text x="764" y="184">Seitenlänge (Schenkel)</text>   <text x="998" y="184" text-anchor="end" font-weight="bold">0,7275 m</text>
+    <text x="764" y="210">Spitze zu Spitze</text>          <text x="998" y="210" text-anchor="end" font-weight="bold">1,4549 m</text>
+    <text x="764" y="236">Radius (Mitte→Ecke)</text>       <text x="998" y="236" text-anchor="end" font-weight="bold">0,7275 m</text>
+    <text x="764" y="262">Apothem (Mitte→Kante)</text>     <text x="998" y="262" text-anchor="end" font-weight="bold">0,6300 m</text>
+    <text x="764" y="288">Innenwinkel</text>               <text x="998" y="288" text-anchor="end" font-weight="bold">120°</text>
+    <text x="764" y="314">Anzahl Seiten</text>             <text x="998" y="314" text-anchor="end" font-weight="bold">6</text>
+  </g>
+
+  <!-- ===================== KOORDINATEN ===================== -->
+  <text x="750" y="372" font-size="16" font-weight="bold" fill="#111">Zuschnitt-Koordinaten (Mitte = 0|0)</text>
+  <g font-size="13" fill="#222">
+    <rect x="750" y="384" width="260" height="230" rx="6" fill="#fafafa" stroke="#ccc"/>
+    <text x="764" y="406" font-weight="bold">Ecke</text>
+    <text x="900" y="406" font-weight="bold" text-anchor="end">X (m)</text>
+    <text x="998" y="406" font-weight="bold" text-anchor="end">Y (m)</text>
+    <line x1="758" y1="414" x2="1002" y2="414" stroke="#ccc"/>
+    <text x="764" y="434">1 rechts</text>       <text x="900" y="434" text-anchor="end">0,7275</text>  <text x="998" y="434" text-anchor="end">0,0000</text>
+    <text x="764" y="460">2 oben rechts</text>  <text x="900" y="460" text-anchor="end">0,3637</text>  <text x="998" y="460" text-anchor="end">0,6300</text>
+    <text x="764" y="486">3 oben links</text>   <text x="900" y="486" text-anchor="end">−0,3637</text> <text x="998" y="486" text-anchor="end">0,6300</text>
+    <text x="764" y="512">4 links</text>        <text x="900" y="512" text-anchor="end">−0,7275</text> <text x="998" y="512" text-anchor="end">0,0000</text>
+    <text x="764" y="538">5 unten links</text>  <text x="900" y="538" text-anchor="end">−0,3637</text> <text x="998" y="538" text-anchor="end">−0,6300</text>
+    <text x="764" y="564">6 unten rechts</text> <text x="900" y="564" text-anchor="end">0,3637</text>  <text x="998" y="564" text-anchor="end">−0,6300</text>
+    <line x1="758" y1="576" x2="1002" y2="576" stroke="#ccc"/>
+    <text x="764" y="598" font-size="12" fill="#555">Reihenfolge 1→2→3→4→5→6→1</text>
+  </g>
+
+  <!-- Fußnote -->
+  <text x="40" y="800" font-size="13" fill="#444">Alle sechs Seiten (Schenkel) sind gleich lang: 0,7275 m. Der Abstand zwischen je zwei parallelen Seiten beträgt 1,26 m.</text>
+  <text x="40" y="822" font-size="13" fill="#444">Die längste Diagonale – von einer Spitze zur gegenüberliegenden Spitze – misst 1,4549 m.</text>
+  <text x="40" y="856" font-size="12" fill="#a00">Hinweis: In der Originalskizze passte die Koordinatentabelle (Radius 0,63) nicht zum Text (flach-zu-flach 1,26). Hier oben sind die Werte korrigiert und stimmig zu 1,26 m flach-zu-flach.</text>
+</svg>
